@@ -6,7 +6,7 @@
   --muted: rgba(242, 239, 233, 0.5);
 
   --ratio: 0.75;       /* 사진 비율 = 가로 ÷ 세로 (3:4 → 0.75). 사진이 바뀌면 이 값만 수정 */
-  --story-length: 700vh; /* 네 컷 시퀀스 전체 스크롤 길이. 길수록 천천히 진행 */
+  --story-length: 600vh; /* 네 컷 시퀀스 전체 스크롤 길이. 길수록 천천히 진행 */
   --gutter: 24px;
 }
 
@@ -110,7 +110,16 @@ a {
   position: relative;
   width: min(100vw, (100svh - 150px) * var(--ratio));
   aspect-ratio: var(--ratio);
-  transform-origin: 50% 50%;
+  /* 처음 들어오면 어둠 속에서 서서히 떠오름 */
+  animation: emerge 2.4s cubic-bezier(0.2, 0.6, 0.2, 1) backwards;
+}
+
+@keyframes emerge {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+    filter: brightness(0.3);
+  }
 }
 
 .layer {
@@ -130,30 +139,44 @@ a {
   will-change: transform, opacity;
 }
 
-/* 첫 화면 제목 */
+/* 사진 가장자리를 검정 배경에 녹아들게 (사진 테두리 사각형이 안 보이도록) */
+img.layer,
+.piece {
+  --edge: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent),
+          linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-image: var(--edge);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--edge);
+  mask-composite: intersect;
+}
+
+/* 첫 화면 제목: 인물을 가리지 않게 아래쪽 (모바일은 사진 아래 가운데) */
 .title {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(52px + env(safe-area-inset-bottom));
   text-align: center;
-  padding: var(--gutter);
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
-  text-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
   pointer-events: none;
+  animation: rise 1.6s ease 0.9s backwards;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 
 .title__label {
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.25em;
-  opacity: 0.7;
-  margin-bottom: 16px;
+  color: var(--muted);
+  margin-bottom: 6px;
 }
 
 .title h1 {
-  font-size: clamp(44px, 12vw, 96px);
+  font-size: 40px;
   font-weight: 200;
   line-height: 1.1;
   letter-spacing: 0.3em;
@@ -161,17 +184,18 @@ a {
 }
 
 .title__sub {
-  font-size: clamp(15px, 2.2vw, 20px);
+  font-size: 14px;
   font-weight: 300;
-  letter-spacing: 0.1em;
-  margin-top: 12px;
+  letter-spacing: 0.12em;
+  margin-top: 8px;
 }
 
 .scroll-hint {
   position: absolute;
   left: 50%;
-  bottom: calc(24px + env(safe-area-inset-bottom));
+  bottom: calc(16px + env(safe-area-inset-bottom));
   translate: -50% 0;
+  animation: rise 1.2s ease 1.8s backwards;
   font-size: 11px;
   letter-spacing: 0.3em;
   color: var(--muted);
@@ -639,6 +663,28 @@ html:has(.lightbox[open]) {
     font-size: 13px;
   }
 
+  /* 제목은 사진 왼쪽 아래, 크게 */
+  .title {
+    right: auto;
+    bottom: 72px;
+    text-align: left;
+  }
+
+  .title h1 {
+    font-size: clamp(44px, 4.5vw, 72px);
+    margin-right: 0;
+  }
+
+  .title__label {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .title__sub {
+    font-size: 17px;
+    margin-top: 12px;
+  }
+
   /* 설명은 사진 왼쪽 아래 */
   .captions {
     left: var(--gutter);
@@ -672,7 +718,10 @@ html:has(.lightbox[open]) {
 
 /* 움직임 줄이기 설정을 켠 사용자: 조각이 날아오지 않고 제자리에서 나타남 (script.js에서 처리) */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-hint span {
+  .scroll-hint span,
+  .scroll-hint,
+  .title,
+  .frame {
     animation: none;
   }
 

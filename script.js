@@ -4,16 +4,15 @@
 // 그 값에 따라 각 요소의 transform / opacity를 매 프레임 계산한다.
 //
 // 진행도 구간
-//   0.00 ~ 0.28  CUT 01  원단 클로즈업 → 줌아웃으로 전신 리빌
-//   0.28 ~ 0.52  CUT 02  조각이 모여 사진 완성
-//   0.52 ~ 0.76  CUT 03
-//   0.76 ~ 1.00  CUT 04
+//   0.00 ~ 0.16  CUT 01  전신이 어둠 속에 서 있음, 제목 → 컷 설명
+//   0.16 ~ 0.44  CUT 02  조각이 모여 사진 완성
+//   0.44 ~ 0.72  CUT 03
+//   0.72 ~ 1.00  CUT 04
 
-const SEGMENTS = [0, 0.28, 0.52, 0.76, 1];
+const SEGMENTS = [0, 0.16, 0.44, 0.72, 1];
 
 const story = document.querySelector('.story');
 const stage = story.querySelector('.stage');
-const frame = story.querySelector('.frame');
 const title = story.querySelector('.title');
 const hint = story.querySelector('.scroll-hint');
 const captions = [...story.querySelectorAll('.caption')];
@@ -21,8 +20,6 @@ const dots = [...story.querySelectorAll('.cut-index li')];
 const pieceLayers = [...story.querySelectorAll('.layer--pieces')];
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-frame.style.transformOrigin = frame.dataset.zoomOrigin || '50% 50%';
 
 
 // ---------- 계산 도우미 ----------
@@ -33,7 +30,6 @@ const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 const range = (v, a, b) => clamp((v - a) / (b - a));
 
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 // 시드가 같으면 항상 같은 값을 내는 난수 (새로고침해도 조각 모양이 같게)
 function seededRandom(seed) {
@@ -112,16 +108,6 @@ const assembled = pieceLayers.map(buildPieces);
 
 // ---------- 장면 그리기 ----------
 
-let startScale = 3;
-
-// 클로즈업 시작 배율: 사진이 화면을 넉넉히 덮을 만큼
-function measure() {
-  const fw = frame.offsetWidth;
-  const fh = frame.offsetHeight;
-  const cover = Math.max(stage.clientWidth / fw, stage.clientHeight / fh);
-  startScale = Math.max(3.2, cover * 1.6);
-}
-
 function getProgress() {
   const rect = story.getBoundingClientRect();
   const total = story.offsetHeight - stage.offsetHeight;
@@ -133,15 +119,11 @@ function render() {
   // 각 컷 구간 안에서의 진행도 (0~1)
   const u = SEGMENTS.slice(0, 4).map((start, i) => range(p, start, SEGMENTS[i + 1]));
 
-  // CUT 01: 줌아웃
-  const zoom = easeInOut(range(u[0], 0.1, 0.75));
-  const scale = reduceMotion ? 1 : startScale + (1 - startScale) * zoom;
-  frame.style.transform = `scale(${scale})`;
-
-  const titleOut = range(u[0], 0.05, 0.35);
+  // CUT 01: 스크롤을 시작하면 제목이 사라지고 컷 설명으로 바뀜
+  const titleOut = range(u[0], 0.1, 0.45);
   title.style.opacity = 1 - titleOut;
-  title.style.transform = `translateY(${-titleOut * 40}px)`;
-  hint.style.opacity = 1 - range(p, 0, 0.03);
+  title.style.transform = `translateY(${-titleOut * 24}px)`;
+  hint.style.opacity = 1 - range(p, 0, 0.02);
 
   // CUT 02~04: 조각 모으기
   assembled.forEach(({ layer, pieces }, i) => {
@@ -163,7 +145,7 @@ function render() {
   // 컷 설명: 사진이 완성되면 나타나고, 다음 컷이 시작되면 사라짐
   let active = 0;
   captions.forEach((cap, i) => {
-    const fadeIn = range(u[i], i === 0 ? 0.75 : 0.72, i === 0 ? 0.92 : 0.9);
+    const fadeIn = range(u[i], i === 0 ? 0.55 : 0.72, i === 0 ? 0.85 : 0.9);
     const fadeOut = i < 3 ? range(u[i + 1], 0, 0.12) : 0;
     const o = fadeIn * (1 - fadeOut);
     cap.style.opacity = o;
@@ -187,12 +169,8 @@ function requestRender() {
 }
 
 window.addEventListener('scroll', requestRender, { passive: true });
-window.addEventListener('resize', () => {
-  measure();
-  requestRender();
-});
+window.addEventListener('resize', requestRender);
 
-measure();
 render();
 
 
@@ -216,6 +194,7 @@ const sectionObserver = new IntersectionObserver((entries) => {
   });
 }, { rootMargin: '-45% 0px -45% 0px' });
 document.querySelectorAll('.section').forEach((section) => sectionObserver.observe(section));
+sectionObserver.observe(story); // 첫 화면에서는 모든 메뉴를 흐리게
 
 
 // ---------- 화면에 들어오면 조각이 차례로 나타남 ----------
