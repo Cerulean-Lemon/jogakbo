@@ -110,7 +110,10 @@ a {
   position: relative;
   width: min(100vw, (100svh - 150px) * var(--ratio));
   aspect-ratio: var(--ratio);
-  /* 처음 들어오면 어둠 속에서 서서히 떠오름 */
+}
+
+/* 처음 들어오면 첫 사진이 어둠 속에서 서서히 떠오름 */
+img.layer {
   animation: emerge 2.4s cubic-bezier(0.2, 0.6, 0.2, 1) backwards;
 }
 
@@ -118,7 +121,6 @@ a {
   from {
     opacity: 0;
     transform: scale(1.04);
-    filter: brightness(0.3);
   }
 }
 
@@ -721,7 +723,7 @@ html:has(.lightbox[open]) {
   .scroll-hint span,
   .scroll-hint,
   .title,
-  .frame {
+  img.layer {
     animation: none;
   }
 

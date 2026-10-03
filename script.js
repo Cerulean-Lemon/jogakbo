@@ -15,6 +15,7 @@ const story = document.querySelector('.story');
 const stage = story.querySelector('.stage');
 const title = story.querySelector('.title');
 const hint = story.querySelector('.scroll-hint');
+const baseImg = story.querySelector('img.layer');
 const captions = [...story.querySelectorAll('.caption')];
 const dots = [...story.querySelectorAll('.cut-index li')];
 const pieceLayers = [...story.querySelectorAll('.layer--pieces')];
@@ -126,10 +127,15 @@ function render() {
   hint.style.opacity = 1 - range(p, 0, 0.02);
 
   // CUT 02~04: 조각 모으기
+  // 위 컷이 다 맞춰지면 아래 컷은 숨김 (흐린 가장자리로 아래 사진이 비치지 않게)
+  const done = assembled.map((_, i) => u[i + 1] >= 0.7);
+  baseImg.style.visibility = done[0] ? 'hidden' : 'visible';
+
   assembled.forEach(({ layer, pieces }, i) => {
     const t = u[i + 1];
-    layer.style.visibility = t > 0 ? 'visible' : 'hidden';
-    if (t <= 0) return;
+    const coveredAbove = done[i + 1] === true;
+    layer.style.visibility = t > 0 && !coveredAbove ? 'visible' : 'hidden';
+    if (t <= 0 || coveredAbove) return;
 
     pieces.forEach((piece) => {
       const local = range(t, piece.delay, piece.delay + 0.25);
