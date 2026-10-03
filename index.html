@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
   <title>조각보 — 가장 귀한 것을 감싸다</title>
   <meta name="description" content="조각보 — 가장 귀한 것을 감싸다">
 
@@ -11,21 +12,119 @@
   <meta property="og:description" content="조각보 — 가장 귀한 것을 감싸다">
   <!-- <meta property="og:image" content="images/thumbnail.jpg"> -->
 
+  <link rel="stylesheet" href="fonts/pretendard/pretendard.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <header class="topbar">
+    <span>2026 정기전</span>
+    <span>조각보</span>
+  </header>
+
   <main>
-    <section class="intro">
-      <p class="label">2026 정기전</p>
-      <h1>조각보</h1>
-      <p class="subtitle">가장 귀한 것을 감싸다</p>
-      <p class="notice">준비 중입니다</p>
+
+    <!--
+      네 컷 시퀀스: 하나의 화면(stage)이 고정된 채 스크롤에 따라 진행
+      01 원단 클로즈업 → 줌아웃으로 전신 리빌
+      02~04 다음 컷이 조각보처럼 조각조각 모여 이전 컷을 덮음
+      사진 교체: img의 src와 data-src 경로만 바꾸면 됨
+    -->
+    <section class="story" aria-label="조각보 네 컷">
+      <div class="stage">
+
+        <figure class="frame" data-zoom-origin="58% 58%">
+          <img class="layer" src="images/cut-01.jpg" alt="CUT 01 — 조각보로 완전히 감싸인 전신">
+          <div class="layer layer--pieces" data-src="images/cut-02.jpg" data-seed="2" role="img" aria-label="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습"></div>
+          <div class="layer layer--pieces" data-src="images/cut-03.jpg" data-seed="3" role="img" aria-label="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷"></div>
+          <div class="layer layer--pieces" data-src="images/cut-04.jpg" data-seed="4" role="img" aria-label="CUT 04 — 조각보 한복 차림으로 드러난 모습"></div>
+        </figure>
+
+        <div class="title">
+          <p class="title__label">2026 정기전</p>
+          <h1>조각보</h1>
+          <p class="title__sub">가장 귀한 것을 감싸다</p>
+        </div>
+
+        <p class="scroll-hint" aria-hidden="true"><span>Scroll</span></p>
+
+        <!-- 컷별 설명 (예시 문구) -->
+        <div class="captions">
+          <div class="caption">
+            <p class="caption__num">01</p>
+            <h2>감싸다</h2>
+            <p>가장 귀한 것은 먼저 감싸 둔다.</p>
+          </div>
+          <div class="caption">
+            <p class="caption__num">02</p>
+            <h2>머금다</h2>
+            <p>조각보 아래 고개를 숙인 채,<br>아직 보이지 않는 것.</p>
+          </div>
+          <div class="caption">
+            <p class="caption__num">03</p>
+            <h2>마주하다</h2>
+            <p>가리개를 걷고 정면을 본다.</p>
+          </div>
+          <div class="caption">
+            <p class="caption__num">04</p>
+            <h2>드러나다</h2>
+            <p>감싸였던 것이 비로소 모습을 드러낸다.</p>
+          </div>
+        </div>
+
+        <ol class="cut-index" aria-hidden="true">
+          <li></li><li></li><li></li><li></li>
+        </ol>
+
+      </div>
     </section>
 
-    <!-- 여기에 사진 섹션 추가 -->
+    <!-- 작품 설명 (예시 문구) -->
+    <section class="statement">
+      <p class="section-label">작품 설명</p>
+      <h2>조각보 — 가장 귀한 것을 감싸다</h2>
+      <p>
+        조각보는 쓰고 남은 천 조각을 한 땀씩 이어 만든 보자기입니다.
+        버려질 뻔한 조각들이 모여, 가장 귀한 것을 감싸는 한 장의 천이 됩니다.
+      </p>
+      <p>
+        이 작업은 그 감싸는 행위를 네 장면으로 풀어냅니다.
+        완전히 감싸인 몸에서 시작해, 가리개를 거두고, 마침내 드러나기까지.
+        화면을 내릴수록 조각들이 모여 한 장의 사진이 되는 것처럼,
+        전시장에 걸린 사진과 이 웹 페이지는 같은 조각보의 원리를 서로 다른 크기로 보여줍니다.
+      </p>
+    </section>
+
+    <section class="info">
+      <dl>
+        <div>
+          <dt>전시</dt>
+          <dd>2026 정기전</dd>
+        </div>
+        <div>
+          <dt>기간</dt>
+          <dd>추후 공지</dd>
+        </div>
+        <div>
+          <dt>장소</dt>
+          <dd>추후 공지</dd>
+        </div>
+        <div>
+          <dt>작가</dt>
+          <dd>이름</dd>
+        </div>
+        <div>
+          <dt>모델</dt>
+          <dd>이름</dd>
+        </div>
+      </dl>
+    </section>
 
   </main>
+
+  <footer class="footer">
+    <p>© 2026 조각보</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
