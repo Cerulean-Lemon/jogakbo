@@ -1,4 +1,5 @@
 .DS_Store
 
-# 원단 원본 (용량이 커서 올리지 않음, 웹용은 images/fabric/)
+# 원본 이미지 (용량이 커서 올리지 않음, 웹용은 images/ 안의 webp)
 /[1-9].*.png
+/조각보QR원본사이즈.png

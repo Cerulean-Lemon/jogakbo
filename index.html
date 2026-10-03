@@ -10,7 +10,7 @@
   <!-- 카카오톡·SNS 링크 미리보기 (이미지 넣으면 경로 수정) -->
   <meta property="og:title" content="조각보 — 가장 귀한 것을 감싸다">
   <meta property="og:description" content="조각보 — 가장 귀한 것을 감싸다">
-  <!-- <meta property="og:image" content="images/thumbnail.jpg"> -->
+  <!-- <meta property="og:image" content="images/thumbnail.webp"> -->
 
   <link rel="stylesheet" href="fonts/pretendard/pretendard.css">
   <link rel="stylesheet" href="style.css">
@@ -18,11 +18,15 @@
 <body>
 
   <header class="topbar">
-    <span>2026 정기전</span>
-    <span>조각보</span>
+    <a class="topbar__logo" href="#top">조각보</a>
+    <nav class="topbar__nav" aria-label="메뉴">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#info">Info</a>
+    </nav>
   </header>
 
-  <main>
+  <main id="top">
 
     <!--
       네 컷 시퀀스: 하나의 화면(stage)이 고정된 채 스크롤에 따라 진행
@@ -34,10 +38,10 @@
       <div class="stage">
 
         <figure class="frame" data-zoom-origin="58% 58%">
-          <img class="layer" src="images/cut-01.jpg" alt="CUT 01 — 조각보로 완전히 감싸인 전신">
-          <div class="layer layer--pieces" data-src="images/cut-02.jpg" data-seed="2" role="img" aria-label="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습"></div>
-          <div class="layer layer--pieces" data-src="images/cut-03.jpg" data-seed="3" role="img" aria-label="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷"></div>
-          <div class="layer layer--pieces" data-src="images/cut-04.jpg" data-seed="4" role="img" aria-label="CUT 04 — 조각보 한복 차림으로 드러난 모습"></div>
+          <img class="layer" src="images/cut-01.webp" alt="CUT 01 — 조각보로 완전히 감싸인 전신">
+          <div class="layer layer--pieces" data-src="images/cut-02.webp" data-seed="2" role="img" aria-label="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습"></div>
+          <div class="layer layer--pieces" data-src="images/cut-03.webp" data-seed="3" role="img" aria-label="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷"></div>
+          <div class="layer layer--pieces" data-src="images/cut-04.webp" data-seed="4" role="img" aria-label="CUT 04 — 조각보 한복 차림으로 드러난 모습"></div>
         </figure>
 
         <div class="title">
@@ -79,45 +83,121 @@
       </div>
     </section>
 
-    <!-- 작품 설명 (예시 문구) -->
-    <section class="statement">
-      <p class="section-label">작품 설명</p>
-      <h2>조각보 — 가장 귀한 것을 감싸다</h2>
-      <p>
-        조각보는 쓰고 남은 천 조각을 한 땀씩 이어 만든 보자기입니다.
-        버려질 뻔한 조각들이 모여, 가장 귀한 것을 감싸는 한 장의 천이 됩니다.
-      </p>
-      <p>
-        이 작업은 그 감싸는 행위를 네 장면으로 풀어냅니다.
-        완전히 감싸인 몸에서 시작해, 가리개를 거두고, 마침내 드러나기까지.
-        화면을 내릴수록 조각들이 모여 한 장의 사진이 되는 것처럼,
-        전시장에 걸린 사진과 이 웹 페이지는 같은 조각보의 원리를 서로 다른 크기로 보여줍니다.
-      </p>
+    <!-- ========== WORK ========== -->
+    <section class="section" id="work">
+      <header class="section__head">
+        <p class="section-label">Work</p>
+        <h2>작업</h2>
+      </header>
+
+      <!-- 작업 01: 사진 4컷 -->
+      <article class="project">
+        <div class="project__info">
+          <p class="project__num">01</p>
+          <h3>가장 귀한 것을 감싸다</h3>
+          <p class="project__meta">Photography · 4 cuts · 2026</p>
+          <p class="project__desc">
+            조각보에 완전히 감싸인 몸에서 시작해 가리개를 거두고 드러나기까지,
+            네 장면으로 이어지는 패션 사진.
+          </p>
+        </div>
+
+        <ul class="gallery" data-reveal>
+          <li style="--i: 0">
+            <button type="button" data-lightbox data-caption="01 감싸다">
+              <img src="images/cut-01.webp" alt="CUT 01 — 조각보로 완전히 감싸인 전신" loading="lazy">
+            </button>
+            <p><span>01</span> 감싸다</p>
+          </li>
+          <li style="--i: 1">
+            <button type="button" data-lightbox data-caption="02 머금다">
+              <img src="images/cut-02.webp" alt="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습" loading="lazy">
+            </button>
+            <p><span>02</span> 머금다</p>
+          </li>
+          <li style="--i: 2">
+            <button type="button" data-lightbox data-caption="03 마주하다">
+              <img src="images/cut-03.webp" alt="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷" loading="lazy">
+            </button>
+            <p><span>03</span> 마주하다</p>
+          </li>
+          <li style="--i: 3">
+            <button type="button" data-lightbox data-caption="04 드러나다">
+              <img src="images/cut-04.webp" alt="CUT 04 — 조각보 한복 차림으로 드러난 모습" loading="lazy">
+            </button>
+            <p><span>04</span> 드러나다</p>
+          </li>
+        </ul>
+      </article>
+
+      <!-- 작업 02: 조각보 QR -->
+      <article class="project">
+        <div class="project__info">
+          <p class="project__num">02</p>
+          <h3>조각보 QR</h3>
+          <p class="project__meta">Textile QR · 모시 9색 · 2026</p>
+          <p class="project__desc">
+            아홉 가지 색의 모시 조각을 이어 지은 QR 코드.
+            도록과 전시장에서 스캔하면 이 페이지로 이어집니다.
+            사진과 같은 조각보의 원리를 다른 크기로 구현한 또 하나의 작업입니다.
+          </p>
+        </div>
+
+        <div class="qr" data-reveal>
+          <button type="button" data-lightbox data-caption="조각보 QR">
+            <img src="images/qr/jogakbo-qr.webp" alt="모시 조각을 이어 만든 조각보 QR 코드" loading="lazy">
+          </button>
+        </div>
+      </article>
     </section>
 
-    <!-- 원단 소개: 모시 9색을 조각보처럼 이어 붙임 (문구는 예시) -->
-    <section class="fabric">
-      <div class="fabric__text">
-        <p class="section-label">원단</p>
-        <h2>모시, 아홉 가지 조각</h2>
-        <p>성기게 짠 올 사이로 빛이 비치는 모시. 작품에 쓰인 아홉 가지 색입니다.</p>
+    <!-- ========== ABOUT ========== -->
+    <section class="section" id="about">
+      <header class="section__head">
+        <p class="section-label">About</p>
+        <h2>조각보 — 가장 귀한 것을 감싸다</h2>
+      </header>
+
+      <div class="about__text">
+        <p>
+          조각보는 쓰고 남은 천 조각을 한 땀씩 이어 만든 보자기입니다.
+          버려질 뻔한 조각들이 모여, 가장 귀한 것을 감싸는 한 장의 천이 됩니다.
+        </p>
+        <p>
+          이 작업은 그 감싸는 행위를 네 장면으로 풀어냅니다.
+          완전히 감싸인 몸에서 시작해, 가리개를 거두고, 마침내 드러나기까지.
+          화면을 내릴수록 조각들이 모여 한 장의 사진이 되는 것처럼,
+          전시장에 걸린 사진과 이 웹 페이지는 같은 조각보의 원리를 서로 다른 크기로 보여줍니다.
+        </p>
       </div>
 
-      <ul class="patchwork">
-        <li style="--i: 0"><img src="images/fabric/01-gray.jpg" alt="회색 모시" loading="lazy"><span>회색</span></li>
-        <li style="--i: 1"><img src="images/fabric/02-beige.jpg" alt="베이지색 모시" loading="lazy"><span>베이지</span></li>
-        <li style="--i: 2"><img src="images/fabric/03-red.jpg" alt="적색 모시" loading="lazy"><span>적색</span></li>
-        <li style="--i: 3"><img src="images/fabric/04-yellow.jpg" alt="황색 모시" loading="lazy"><span>황색</span></li>
-        <li style="--i: 4"><img src="images/fabric/05-navy.jpg" alt="남색 모시" loading="lazy"><span>남색</span></li>
-        <li style="--i: 5"><img src="images/fabric/06-green.jpg" alt="녹색 모시" loading="lazy"><span>녹색</span></li>
-        <li style="--i: 6"><img src="images/fabric/07-purple.jpg" alt="자주색 모시" loading="lazy"><span>자주</span></li>
-        <li style="--i: 7"><img src="images/fabric/08-ink.jpg" alt="먹색 모시" loading="lazy"><span>먹색</span></li>
-        <li style="--i: 8"><img src="images/fabric/09-raw.jpg" alt="생지 모시" loading="lazy"><span>생지</span></li>
-      </ul>
+      <!-- 원단 소개: 모시 9색을 조각보처럼 이어 붙임 (문구는 예시) -->
+      <div class="fabric">
+        <h3>Material — 모시, 아홉 가지 조각</h3>
+        <p>성기게 짠 올 사이로 빛이 비치는 모시. 작품에 쓰인 아홉 가지 색입니다.</p>
+
+        <ul class="patchwork" data-reveal>
+          <li style="--i: 0"><img src="images/fabric/01-gray.webp" alt="회색 모시" loading="lazy"><span>회색</span></li>
+          <li style="--i: 1"><img src="images/fabric/02-beige.webp" alt="베이지색 모시" loading="lazy"><span>베이지</span></li>
+          <li style="--i: 2"><img src="images/fabric/03-red.webp" alt="적색 모시" loading="lazy"><span>적색</span></li>
+          <li style="--i: 3"><img src="images/fabric/04-yellow.webp" alt="황색 모시" loading="lazy"><span>황색</span></li>
+          <li style="--i: 4"><img src="images/fabric/05-navy.webp" alt="남색 모시" loading="lazy"><span>남색</span></li>
+          <li style="--i: 5"><img src="images/fabric/06-green.webp" alt="녹색 모시" loading="lazy"><span>녹색</span></li>
+          <li style="--i: 6"><img src="images/fabric/07-purple.webp" alt="자주색 모시" loading="lazy"><span>자주</span></li>
+          <li style="--i: 7"><img src="images/fabric/08-ink.webp" alt="먹색 모시" loading="lazy"><span>먹색</span></li>
+          <li style="--i: 8"><img src="images/fabric/09-raw.webp" alt="생지 모시" loading="lazy"><span>생지</span></li>
+        </ul>
+      </div>
     </section>
 
-    <section class="info">
-      <dl>
+    <!-- ========== INFO ========== -->
+    <section class="section" id="info">
+      <header class="section__head">
+        <p class="section-label">Info</p>
+        <h2>전시 정보</h2>
+      </header>
+
+      <dl class="info">
         <div>
           <dt>전시</dt>
           <dd>2026 정기전</dd>
@@ -146,6 +226,15 @@
   <footer class="footer">
     <p>© 2026 조각보</p>
   </footer>
+
+  <!-- 사진 크게 보기 -->
+  <dialog class="lightbox" aria-label="사진 크게 보기">
+    <img class="lightbox__img" src="" alt="">
+    <p class="lightbox__caption"><span class="lightbox__count"></span><span class="lightbox__title"></span></p>
+    <button type="button" class="lightbox__close" aria-label="닫기">✕</button>
+    <button type="button" class="lightbox__prev" aria-label="이전 사진">←</button>
+    <button type="button" class="lightbox__next" aria-label="다음 사진">→</button>
+  </dialog>
 
   <script src="script.js"></script>
 </body>

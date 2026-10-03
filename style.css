@@ -36,17 +36,54 @@ img {
 
 /* ---------- 상단 바 ---------- */
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 64px; /* 메뉴 눌러 이동할 때 상단 바에 가리지 않게 */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .topbar {
   position: fixed;
   inset: 0 0 auto;
   z-index: 10;
   display: flex;
   justify-content: space-between;
-  padding: calc(16px + env(safe-area-inset-top)) var(--gutter) 16px;
-  font-size: 12px;
-  letter-spacing: 0.15em;
+  align-items: center;
+  padding: calc(14px + env(safe-area-inset-top)) var(--gutter) 14px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  transition: background-color 0.4s, backdrop-filter 0.4s;
+}
+
+/* 네 컷 시퀀스를 지나면 배경이 깔림 (script.js가 is-solid 추가) */
+.topbar.is-solid {
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.topbar__logo {
+  font-weight: 500;
+  letter-spacing: 0.3em;
+}
+
+.topbar__nav {
+  display: flex;
+  gap: 20px;
+}
+
+.topbar__nav a {
   color: var(--muted);
-  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.topbar__nav a:hover,
+.topbar__nav a.is-active {
+  color: var(--fg);
 }
 
 /* ---------- 네 컷 시퀀스 ---------- */
@@ -211,63 +248,146 @@ img {
   border-color: var(--fg);
 }
 
-/* ---------- 작품 설명 · 정보 ---------- */
+/* ---------- 공통 섹션 (Work · About · Info) ---------- */
 
-.statement,
-.info {
-  max-width: 640px;
+.section {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 120px var(--gutter);
+  padding: 120px var(--gutter) 0;
+}
+
+.section__head {
+  margin-bottom: 48px;
 }
 
 .section-label {
   font-size: 12px;
   letter-spacing: 0.25em;
+  text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
-.statement h2 {
-  font-size: clamp(22px, 5vw, 30px);
+.section__head h2 {
+  font-size: clamp(24px, 5vw, 36px);
   font-weight: 400;
-  line-height: 1.4;
-  margin-bottom: 32px;
+  line-height: 1.35;
 }
 
-.statement p + p {
-  margin-top: 1.2em;
+/* 화면에 들어오면 조각이 차례로 나타남 (script.js가 is-in 추가) */
+[data-reveal] > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition-delay: calc(var(--i, 0) * 0.08s);
 }
 
-.statement p:not(.section-label) {
-  font-size: 16px;
-  font-weight: 300;
-  color: rgba(242, 239, 233, 0.85);
+[data-reveal].is-in > * {
+  opacity: 1;
+  transform: none;
 }
 
-/* ---------- 원단 소개 ---------- */
+/* ---------- Work ---------- */
 
-.fabric {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 0 var(--gutter) 120px;
+.project + .project {
+  margin-top: 96px;
 }
 
-.fabric__text {
-  max-width: 640px;
-  margin: 0 auto 40px;
+.project__num {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
 }
 
-.fabric h2 {
-  font-size: clamp(22px, 5vw, 30px);
-  font-weight: 400;
-  line-height: 1.4;
+.project h3 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 4px 0 6px;
+}
+
+.project__meta {
+  font-size: 13px;
+  color: var(--muted);
   margin-bottom: 16px;
 }
 
-.fabric__text p:last-child {
+.project__desc {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(242, 239, 233, 0.85);
+  margin-bottom: 32px;
+}
+
+/* 사진 모아보기 */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 12px;
+  list-style: none;
+}
+
+/* 눌러서 크게 보는 사진 */
+[data-lightbox] {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #111;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+[data-lightbox] img {
+  width: 100%;
+  transition: transform 0.6s ease;
+}
+
+.gallery img {
+  aspect-ratio: var(--ratio);
+  object-fit: cover;
+}
+
+.gallery p {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.gallery p span {
+  color: var(--muted);
+  margin-right: 6px;
+}
+
+.qr {
+  max-width: 560px;
+}
+
+/* ---------- About ---------- */
+
+.about__text p {
   font-size: 16px;
   font-weight: 300;
   color: rgba(242, 239, 233, 0.85);
+}
+
+.about__text p + p {
+  margin-top: 1.2em;
+}
+
+.fabric {
+  margin-top: 96px;
+}
+
+.fabric h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.fabric > p {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(242, 239, 233, 0.85);
+  margin-bottom: 32px;
 }
 
 /* 크기가 다른 조각을 이어 붙인 배치. 글자 하나가 조각 하나 (a = 회색 … i = 생지) */
@@ -300,16 +420,6 @@ img {
   position: relative;
   overflow: hidden;
   background: #111;
-  /* 화면에 들어오면 한 조각씩 차례로 나타남 (script.js가 is-in 추가) */
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-  transition-delay: calc(var(--i) * 0.08s);
-}
-
-.patchwork.is-in li {
-  opacity: 1;
-  transform: none;
 }
 
 .patchwork img {
@@ -339,20 +449,18 @@ img {
 }
 
 @media (hover: hover) {
-  .patchwork li:hover img {
-    transform: scale(1.06);
+  .patchwork li:hover img,
+  [data-lightbox]:hover img {
+    transform: scale(1.04);
   }
 }
 
 .info {
-  padding-top: 0;
-}
-
-.info dl {
+  max-width: 640px;
   border-top: 1px solid rgba(242, 239, 233, 0.2);
 }
 
-.info dl > div {
+.info > div {
   display: grid;
   grid-template-columns: 80px 1fr;
   padding: 16px 0;
@@ -364,7 +472,93 @@ img {
   color: var(--muted);
 }
 
+/* ---------- 사진 크게 보기 ---------- */
+
+.lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 56px 16px 72px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.94);
+  color: var(--fg);
+}
+
+.lightbox[open] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lightbox::backdrop {
+  background: transparent;
+}
+
+html:has(.lightbox[open]) {
+  overflow: hidden;
+}
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lightbox__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  text-align: center;
+  font-size: 13px;
+}
+
+.lightbox__count {
+  color: var(--muted);
+  margin-right: 12px;
+}
+
+.lightbox button {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.lightbox button:hover {
+  opacity: 1;
+}
+
+/* 마우스·터치로 열 때 버튼 테두리 숨김 (키보드로 이동할 때만 표시) */
+.lightbox button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.lightbox__close {
+  top: calc(8px + env(safe-area-inset-top));
+  right: 8px;
+}
+
+.lightbox__prev,
+.lightbox__next {
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.lightbox__prev { left: 4px; }
+.lightbox__next { right: 4px; }
+
 .footer {
+  margin-top: 120px;
   padding: 48px var(--gutter) calc(48px + env(safe-area-inset-bottom));
   text-align: center;
   font-size: 12px;
@@ -387,9 +581,46 @@ img {
     height: 100%;
   }
 
-  .fabric__text {
-    margin-bottom: 56px;
+  /* 섹션: 왼쪽 제목 / 오른쪽 내용 */
+  .section {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    column-gap: 64px;
+    padding-top: 160px;
   }
+
+  /* 제목은 스크롤해도 왼쪽에 붙어 있음 */
+  .section__head {
+    grid-column: 1;
+    grid-row: 1 / span 10;
+    align-self: start;
+    position: sticky;
+    top: 96px;
+  }
+
+  .section > :not(.section__head) {
+    grid-column: 2;
+  }
+
+  .section__head h2 {
+    font-size: 28px;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .project__desc {
+    max-width: 560px;
+  }
+
+  .lightbox {
+    padding: 72px 96px;
+  }
+
+  .lightbox__prev { left: 24px; }
+  .lightbox__next { right: 24px; }
 
   .patchwork {
     grid-template-columns: repeat(6, 1fr);
@@ -430,7 +661,12 @@ img {
   }
 
   .topbar {
-    padding-top: 24px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .topbar__nav {
+    gap: 32px;
   }
 }
 
@@ -440,7 +676,11 @@ img {
     animation: none;
   }
 
-  .patchwork li {
+  [data-reveal] > * {
     transition: none;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }

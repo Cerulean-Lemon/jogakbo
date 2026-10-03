@@ -196,13 +196,84 @@ measure();
 render();
 
 
-// ---------- 원단 소개: 화면에 들어오면 조각이 차례로 나타남 ----------
+// ---------- 상단 바 ----------
 
-const patchwork = document.querySelector('.patchwork');
-const patchObserver = new IntersectionObserver((entries) => {
-  if (entries[0].isIntersecting) {
-    patchwork.classList.add('is-in');
-    patchObserver.disconnect();
-  }
-}, { threshold: 0.2 });
-patchObserver.observe(patchwork);
+const topbar = document.querySelector('.topbar');
+const navLinks = [...document.querySelectorAll('.topbar__nav a')];
+
+// 네 컷 시퀀스를 지나면 상단 바에 배경을 깖
+function updateTopbar() {
+  topbar.classList.toggle('is-solid', story.getBoundingClientRect().bottom <= topbar.offsetHeight);
+}
+window.addEventListener('scroll', updateTopbar, { passive: true });
+updateTopbar();
+
+// 지금 보고 있는 섹션의 메뉴를 밝게
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    navLinks.forEach((a) => a.classList.toggle('is-active', a.hash === `#${entry.target.id}`));
+  });
+}, { rootMargin: '-45% 0px -45% 0px' });
+document.querySelectorAll('.section').forEach((section) => sectionObserver.observe(section));
+
+
+// ---------- 화면에 들어오면 조각이 차례로 나타남 ----------
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('is-in');
+    revealObserver.unobserve(entry.target);
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-reveal]').forEach((el) => revealObserver.observe(el));
+
+
+// ---------- 사진 크게 보기 ----------
+
+const lightbox = document.querySelector('.lightbox');
+const lbImg = lightbox.querySelector('.lightbox__img');
+const lbTitle = lightbox.querySelector('.lightbox__title');
+const lbCount = lightbox.querySelector('.lightbox__count');
+const lbItems = [...document.querySelectorAll('[data-lightbox]')];
+let lbIndex = 0;
+
+function showPhoto(index) {
+  lbIndex = (index + lbItems.length) % lbItems.length;
+  const item = lbItems[lbIndex];
+  const img = item.querySelector('img');
+  lbImg.src = img.currentSrc || img.src;
+  lbImg.alt = img.alt;
+  lbTitle.textContent = item.dataset.caption;
+  lbCount.textContent = `${lbIndex + 1} / ${lbItems.length}`;
+  if (!lightbox.open) lightbox.showModal();
+}
+
+lbItems.forEach((item, i) => item.addEventListener('click', () => showPhoto(i)));
+lightbox.querySelector('.lightbox__prev').addEventListener('click', () => showPhoto(lbIndex - 1));
+lightbox.querySelector('.lightbox__next').addEventListener('click', () => showPhoto(lbIndex + 1));
+lightbox.querySelector('.lightbox__close').addEventListener('click', () => lightbox.close());
+
+// 사진 바깥 빈 곳을 누르면 닫힘
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) lightbox.close();
+});
+
+// 키보드 ← →
+lightbox.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') showPhoto(lbIndex - 1);
+  if (e.key === 'ArrowRight') showPhoto(lbIndex + 1);
+});
+
+// 모바일: 옆으로 밀어서 넘기기
+let touchX = null;
+lightbox.addEventListener('touchstart', (e) => {
+  touchX = e.touches[0].clientX;
+}, { passive: true });
+lightbox.addEventListener('touchend', (e) => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50) showPhoto(lbIndex + (dx < 0 ? 1 : -1));
+  touchX = null;
+});
