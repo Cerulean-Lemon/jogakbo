@@ -244,6 +244,106 @@ img {
   color: rgba(242, 239, 233, 0.85);
 }
 
+/* ---------- 원단 소개 ---------- */
+
+.fabric {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--gutter) 120px;
+}
+
+.fabric__text {
+  max-width: 640px;
+  margin: 0 auto 40px;
+}
+
+.fabric h2 {
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.fabric__text p:last-child {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(242, 239, 233, 0.85);
+}
+
+/* 크기가 다른 조각을 이어 붙인 배치. 글자 하나가 조각 하나 (a = 회색 … i = 생지) */
+.patchwork {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 80px;
+  grid-template-areas:
+    "a a a b"
+    "a a a b"
+    "c c d d"
+    "e f f f"
+    "e g g h"
+    "i i i h";
+  gap: 2px;
+  list-style: none;
+}
+
+.patchwork li:nth-child(1) { grid-area: a; }
+.patchwork li:nth-child(2) { grid-area: b; }
+.patchwork li:nth-child(3) { grid-area: c; }
+.patchwork li:nth-child(4) { grid-area: d; }
+.patchwork li:nth-child(5) { grid-area: e; }
+.patchwork li:nth-child(6) { grid-area: f; }
+.patchwork li:nth-child(7) { grid-area: g; }
+.patchwork li:nth-child(8) { grid-area: h; }
+.patchwork li:nth-child(9) { grid-area: i; }
+
+.patchwork li {
+  position: relative;
+  overflow: hidden;
+  background: #111;
+  /* 화면에 들어오면 한 조각씩 차례로 나타남 (script.js가 is-in 추가) */
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition-delay: calc(var(--i) * 0.08s);
+}
+
+.patchwork.is-in li {
+  opacity: 1;
+  transform: none;
+}
+
+.patchwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.patchwork span {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+/* 밝은 원단(회색·베이지·황색·생지)은 글자를 어둡게 */
+.patchwork li:nth-child(1) span,
+.patchwork li:nth-child(2) span,
+.patchwork li:nth-child(4) span,
+.patchwork li:nth-child(9) span {
+  color: #2a2620;
+  text-shadow: none;
+}
+
+@media (hover: hover) {
+  .patchwork li:hover img {
+    transform: scale(1.06);
+  }
+}
+
 .info {
   padding-top: 0;
 }
@@ -287,6 +387,27 @@ img {
     height: 100%;
   }
 
+  .fabric__text {
+    margin-bottom: 56px;
+  }
+
+  .patchwork {
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 140px;
+    grid-template-areas:
+      "a a a b b b"
+      "a a a c c d"
+      "e e f f g d"
+      "e e h h i i";
+    gap: 3px;
+  }
+
+  .patchwork span {
+    left: 16px;
+    bottom: 12px;
+    font-size: 13px;
+  }
+
   /* 설명은 사진 왼쪽 아래 */
   .captions {
     left: var(--gutter);
@@ -317,5 +438,9 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .scroll-hint span {
     animation: none;
+  }
+
+  .patchwork li {
+    transition: none;
   }
 }

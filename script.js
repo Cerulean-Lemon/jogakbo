@@ -194,3 +194,15 @@ window.addEventListener('resize', () => {
 
 measure();
 render();
+
+
+// ---------- 원단 소개: 화면에 들어오면 조각이 차례로 나타남 ----------
+
+const patchwork = document.querySelector('.patchwork');
+const patchObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    patchwork.classList.add('is-in');
+    patchObserver.disconnect();
+  }
+}, { threshold: 0.2 });
+patchObserver.observe(patchwork);

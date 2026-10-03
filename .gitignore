@@ -1,1 +1,4 @@
 .DS_Store
+
+# 원단 원본 (용량이 커서 올리지 않음, 웹용은 images/fabric/)
+/[1-9].*.png
