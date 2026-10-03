@@ -439,7 +439,7 @@ a {
   text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
-/* 밝은 원단(회색·베이지·황색·생지)은 글자를 어둡게 */
+/* 밝은 원단(회색·모래색·황색·생지)은 글자를 어둡게 */
 .patchwork li:nth-child(1) span,
 .patchwork li:nth-child(2) span,
 .patchwork li:nth-child(4) span,
