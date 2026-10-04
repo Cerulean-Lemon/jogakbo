@@ -29,19 +29,29 @@
   <main id="top">
 
     <!--
-      네 컷 시퀀스: 하나의 화면(stage)이 고정된 채 스크롤에 따라 진행
+      세 컷 시퀀스: 하나의 화면(stage)이 고정된 채 스크롤에 따라 진행
       01 어둠 속에서 전신이 서서히 떠오름
-      02~04 다음 컷이 조각보처럼 조각조각 모여 이전 컷을 덮음
+      [컴퓨터] 하나로 이어 붙인 영상 (images/seq/main/, 243장)
+        0001~0121 영상 1: 카메라가 다가가며 천이 가리개로 바뀜 (끝 장면 = 2컷)
+        0122~0243 영상 2: 가리개를 벗고 정면을 응시 (끝 장면 = 3컷)
+      [휴대폰] 사진만 사용 (영상은 불러오지 않음)
+        02~03 조각이 사방에서 날아와 맞춰지며 이전 컷을 덮음
       사진 교체: img의 src와 data-src 경로만 바꾸면 됨
+      영상 교체: 폴더 안의 0001.webp~ 프레임과 data-count(장수)를 바꾸면 됨
     -->
-    <section class="story" aria-label="조각보 네 컷">
+    <section class="story" aria-label="조각보 세 컷">
       <div class="stage">
 
         <figure class="frame">
-          <img class="layer" src="images/cut-01.webp" alt="CUT 01 — 조각보로 완전히 감싸인 전신">
-          <div class="layer layer--pieces" data-src="images/cut-02.webp" data-seed="2" role="img" aria-label="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습"></div>
-          <div class="layer layer--pieces" data-src="images/cut-03.webp" data-seed="3" role="img" aria-label="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷"></div>
-          <div class="layer layer--pieces" data-src="images/cut-04.webp" data-seed="4" role="img" aria-label="CUT 04 — 조각보 한복 차림으로 드러난 모습"></div>
+          <img class="layer layer--first" src="images/cut-01.webp" alt="CUT 01 — 조각보로 완전히 감싸인 전신">
+
+          <!-- 컴퓨터용: 영상 → 3컷 사진 (data-junction: 2컷 장면이 나오는 프레임 번호) -->
+          <canvas class="layer layer--video only-desktop" data-src="images/seq/main/" data-count="243" data-junction="121" role="img" aria-label="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습"></canvas>
+          <img class="layer layer--still only-desktop" src="images/cut-03.webp" alt="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷" loading="lazy">
+
+          <!-- 휴대폰용: 조각 전환 -->
+          <div class="layer layer--pieces only-mobile" data-cut="2" data-src="images/cut-02.webp" data-seed="2" role="img" aria-label="CUT 02 — 조각보 가리개를 두르고 고개 숙인 모습"></div>
+          <div class="layer layer--pieces only-mobile" data-cut="3" data-src="images/cut-03.webp" data-seed="3" role="img" aria-label="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷"></div>
         </figure>
 
         <div class="title">
@@ -57,27 +67,22 @@
           <div class="caption">
             <p class="caption__num">01</p>
             <h2>감싸다</h2>
-            <p>가장 귀한 것은 먼저 감싸 둔다.</p>
+            <p>가장 귀한 것은<br>먼저 감싸 둔다.</p>
           </div>
           <div class="caption">
             <p class="caption__num">02</p>
             <h2>머금다</h2>
-            <p>조각보 아래 고개를 숙인 채,<br>아직 보이지 않는 것.</p>
+            <p>조각보 아래 고개를 숙인 채,<br>아직 드러내지 않은 마음.</p>
           </div>
           <div class="caption">
             <p class="caption__num">03</p>
             <h2>마주하다</h2>
-            <p>가리개를 걷고 정면을 본다.</p>
-          </div>
-          <div class="caption">
-            <p class="caption__num">04</p>
-            <h2>드러나다</h2>
-            <p>감싸였던 것이 비로소 모습을 드러낸다.</p>
+            <p>가리개를 걷고,<br>비로소 정면을 마주한다.</p>
           </div>
         </div>
 
         <ol class="cut-index" aria-hidden="true">
-          <li></li><li></li><li></li><li></li>
+          <li></li><li></li><li></li>
         </ol>
 
       </div>
@@ -90,15 +95,15 @@
         <h2>작업</h2>
       </header>
 
-      <!-- 작업 01: 사진 4컷 -->
+      <!-- 작업 01: 사진 3컷 -->
       <article class="project">
         <div class="project__info">
           <p class="project__num">01</p>
           <h3>가장 귀한 것을 감싸다</h3>
-          <p class="project__meta">Photography · 4 cuts · 2026</p>
+          <p class="project__meta">Photography · 3 cuts · 2026</p>
           <p class="project__desc">
-            조각보에 완전히 감싸인 몸에서 시작해 가리개를 거두고 드러나기까지,
-            네 장면으로 이어지는 패션 사진.
+            조각보에 완전히 감싸인 몸에서 시작해 가리개를 거두고 정면을 마주하기까지,
+            세 장면으로 이어지는 패션 사진.
           </p>
         </div>
 
@@ -120,12 +125,6 @@
               <img src="images/cut-03.webp" alt="CUT 03 — 가리개 없이 정면을 바라보는 체스트샷" loading="lazy">
             </button>
             <p><span>03</span> 마주하다</p>
-          </li>
-          <li style="--i: 3">
-            <button type="button" data-lightbox data-caption="04 드러나다">
-              <img src="images/cut-04.webp" alt="CUT 04 — 조각보 한복 차림으로 드러난 모습" loading="lazy">
-            </button>
-            <p><span>04</span> 드러나다</p>
           </li>
         </ul>
       </article>
@@ -164,7 +163,7 @@
           버려질 뻔한 조각들이 모여, 가장 귀한 것을 감싸는 한 장의 천이 됩니다.
         </p>
         <p>
-          이 작업은 그 감싸는 행위를 네 장면으로 풀어냅니다.
+          이 작업은 그 감싸는 행위를 세 장면으로 풀어냅니다.
           완전히 감싸인 몸에서 시작해, 가리개를 거두고, 마침내 드러나기까지.
           화면을 내릴수록 조각들이 모여 한 장의 사진이 되는 것처럼,
           전시장에 걸린 사진과 이 웹 페이지는 같은 조각보의 원리를 서로 다른 크기로 보여줍니다.
