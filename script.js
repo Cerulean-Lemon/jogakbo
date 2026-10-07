@@ -6,8 +6,8 @@
 // 컴퓨터(폭 900px 이상)는 영상으로, 휴대폰은 사진 조각 전환으로 이어진다
 //
 // 진행도 구간 — 컴퓨터
-//   0.00 ~ 0.08  CUT 01  전신이 어둠 속에 서 있음, 제목 → 컷 설명
-//   0.08 ~ 1.00  영상    하나로 이어 붙인 영상. 2컷 장면에서 속도를 늦췄다가 다시 올려
+//   0.00 ~ 0.05  CUT 01  전신이 어둠 속에 서 있음, 제목 → 컷 설명
+//   0.05 ~ 1.00  영상    하나로 이어 붙인 영상. 2컷 장면에서 속도를 늦췄다가 다시 올려
 //                        멈추지 않고 3컷 사진에 도착한 뒤 머묾
 //
 // 진행도 구간 — 휴대폰
@@ -16,7 +16,7 @@
 //   0.61 ~ 1.00  CUT 03
 
 const SEGMENTS = {
-  desktop: { cut1: [0, 0.08], video: [0.08, 1] },
+  desktop: { cut1: [0, 0.05], video: [0.05, 1] },
   mobile: { cut1: [0, 0.22], cut2: [0.22, 0.61], cut3: [0.61, 1] },
 };
 
@@ -230,10 +230,10 @@ function easeThrough(v, junction, slow = 0.7) {
   return uncenter(y - (slow * Math.sin(4 * Math.PI * y)) / (4 * Math.PI));
 }
 
-function render() {
+// p: 그릴 진행도 (기본값은 지금 스크롤 위치)
+function render(p = getProgress()) {
   const desktop = desktopQuery.matches;
   const segments = desktop ? SEGMENTS.desktop : SEGMENTS.mobile;
-  const p = getProgress();
   // 각 구간 안에서의 진행도 (0~1)
   const seg = (name) => range(p, ...segments[name]);
   const u1 = seg('cut1');
@@ -325,14 +325,38 @@ function render() {
 
 // ---------- 실행 ----------
 
+// 컴퓨터에서는 화면이 스크롤 위치를 한 박자 늦게, 미끄러지듯 따라감 (묵직한 관성)
+// INERTIA: 따라잡는 데 걸리는 시간(초). 클수록 더 묵직함. 휴대폰은 바로 따라감
+const INERTIA = 0.6;
+let shown = null; // 지금 화면에 그려진 진행도
+let lastTime = 0;
 let ticking = false;
+
+function tick(time) {
+  const target = getProgress();
+  const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.1) : 0;
+  lastTime = time;
+
+  if (shown === null || !desktopQuery.matches || reduceMotion) {
+    shown = target;
+  } else {
+    shown += (target - shown) * (1 - Math.exp(-dt / INERTIA));
+    if (Math.abs(target - shown) < 0.00005) shown = target;
+  }
+  render(shown);
+
+  if (shown !== target) {
+    requestAnimationFrame(tick);
+  } else {
+    ticking = false;
+    lastTime = 0;
+  }
+}
+
 function requestRender() {
   if (ticking) return;
   ticking = true;
-  requestAnimationFrame(() => {
-    ticking = false;
-    render();
-  });
+  requestAnimationFrame(tick);
 }
 
 window.addEventListener('scroll', requestRender, { passive: true });
@@ -342,7 +366,8 @@ window.addEventListener('resize', () => {
 });
 
 sizeClips();
-render();
+shown = getProgress();
+render(shown);
 
 
 // ---------- 상단 바 ----------
