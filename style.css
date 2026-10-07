@@ -6,7 +6,7 @@
   --muted: rgba(242, 239, 233, 0.5);
 
   --ratio: 0.75;       /* 사진 비율 = 가로 ÷ 세로 (3:4 → 0.75). 사진이 바뀌면 이 값만 수정 */
-  --story-length: 450vh; /* 세 컷 시퀀스 전체 스크롤 길이. 길수록 천천히 진행 (컴퓨터는 아래에서 650vh) */
+  --story-length: 450vh; /* 세 컷 시퀀스 전체 스크롤 길이. 길수록 천천히 진행 (컴퓨터는 아래에서 1100vh) */
   --gutter: 24px;
 }
 
@@ -609,7 +609,7 @@ html:has(.lightbox[open]) {
 @media (min-width: 900px) {
   :root {
     --gutter: 48px;
-    --story-length: 650vh; /* 영상이 들어가서 더 김 */
+    --story-length: 1100vh; /* 영상이 들어가서 더 김. 늘리면 영상이 더 천천히 지나감 */
   }
 
   .only-desktop {
