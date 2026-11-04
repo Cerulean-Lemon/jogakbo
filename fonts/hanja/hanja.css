@@ -1,0 +1,14 @@
+/* 한자 전용 소형 글꼴
+   Noto Serif KR 400에서 이 페이지에 쓰는 한자 20자만 잘라 낸 파일 (약 5KB) — SIL Open Font License 1.1, LICENSE.txt 참고
+   靑 赤 黃 白 黑 綠 碧 紫 硫 五 方 間 色 正 褓 木 火 土 金 水
+   글꼴 목록 맨 앞에 두어 위 한자는 이 글꼴로, 나머지 글자는 다음 글꼴로 보임
+   여기에 없는 한자를 새로 쓰면 기기의 기본 글꼴로 보임 */
+
+@font-face {
+  font-family: 'Jogakbo Hanja';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./hanja.woff2) format('woff2');
+  unicode-range: U+9751,U+8D64,U+9EC3,U+767D,U+9ED1,U+7DA0,U+78A7,U+7D2B,U+786B,U+4E94,U+65B9,U+9593,U+8272,U+6B63,U+8913,U+6728,U+706B,U+571F,U+91D1,U+6C34;
+}
