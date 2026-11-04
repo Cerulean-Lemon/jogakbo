@@ -1,16 +1,54 @@
+/* =========================================================
+   조각보 — 가장 귀한 것을 감싸다
+   순서: 기본 → 상단 메뉴 → 공통 섹션 → 01 작품 → 02 배경 → 03 아홉 가지 색
+        → 04 사진 → 05 QR → 06 전시 정보 → 크게 보기 → 컴퓨터(900px 이상) → 움직임 줄이기
+   색·크기는 :root의 변수만 바꾸면 전체에 반영됨
+   ========================================================= */
+
+
 /* ---------- 기본 ---------- */
 
 :root {
-  --bg: #000;
-  --fg: #f2efe9;
-  --muted: rgba(242, 239, 233, 0.5);
+  --ink: #0e0c0b;         /* 어두운 섹션 바탕 (먹) */
+  --linen: #ebe5d8;       /* 밝은 섹션 바탕 (생지 모시) */
+  --cream: #f2ede3;       /* 어두운 바탕 위 글자 */
+  --charcoal: #1d1916;    /* 밝은 바탕 위 글자 */
+  --accent: #8f1d24;      /* 강조색 (붉은 모시) */
 
-  --ratio: 0.75;       /* 사진 비율 = 가로 ÷ 세로 (3:4 → 0.75). 사진이 바뀌면 이 값만 수정 */
-  --story-length: 450vh; /* 세 컷 시퀀스 전체 스크롤 길이. 길수록 천천히 진행 (컴퓨터는 아래에서 1800vh) */
-  --gutter: 24px;
+  --ratio: 0.75;          /* 사진 비율 = 가로 ÷ 세로 (3:4) */
+  --gutter: 20px;         /* 화면 양옆 여백 */
+  --topbar-h: 56px;       /* 상단 메뉴 높이 */
+  --safe-top: env(safe-area-inset-top, 0px);
+
+  /* 한자 전용 글꼴을 맨 앞에: 한자만 그 글꼴로, 나머지는 다음 글꼴로 */
+  --sans: 'Jogakbo Hanja', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --serif: 'Jogakbo Hanja', 'Gowun Batang', 'Noto Serif KR', 'AppleMyungjo', 'Batang', serif;
+
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
-* {
+/* 섹션 색: 어두운 바탕(사진) / 밝은 바탕(천) — 섹션에 theme-dark 또는 theme-light */
+.theme-dark {
+  --bg: var(--ink);
+  --fg: var(--cream);
+  --muted: rgba(242, 237, 227, 0.56);
+  --line: rgba(242, 237, 227, 0.18);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.theme-light {
+  --bg: var(--linen);
+  --fg: var(--charcoal);
+  --muted: rgba(29, 25, 22, 0.58);
+  --line: rgba(29, 25, 22, 0.18);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -18,27 +56,24 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-padding-top: var(--topbar-h);
 }
 
 body {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--sans);
   line-height: 1.7;
-  word-break: keep-all; /* 한글 단어 중간에서 줄바꿈 방지 */
+  word-break: keep-all;      /* 한글 단어 중간에서 줄바꿈 방지 */
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;          /* 옆으로 넘치는 것만 자름 (hidden과 달리 sticky가 그대로 동작) */
 }
 
 img {
   display: block;
   max-width: 100%;
-}
-
-/* ---------- 상단 바 ---------- */
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 64px; /* 메뉴 눌러 이동할 때 상단 바에 가리지 않게 */
+  height: auto;
 }
 
 a {
@@ -46,323 +81,832 @@ a {
   text-decoration: none;
 }
 
-.topbar {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: calc(14px + env(safe-area-inset-top)) var(--gutter) 14px;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  transition: background-color 0.4s, backdrop-filter 0.4s;
+button {
+  font: inherit;
+  color: inherit;
 }
 
-/* 네 컷 시퀀스를 지나면 배경이 깔림 (script.js가 is-solid 추가) */
-.topbar.is-solid {
-  background: rgba(0, 0, 0, 0.7);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+ol,
+ul {
+  list-style: none;
 }
 
-.topbar__logo {
-  font-weight: 500;
-  letter-spacing: 0.3em;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
-.topbar__nav {
-  display: flex;
-  gap: 20px;
-}
-
-.topbar__nav a {
-  color: var(--muted);
-  transition: color 0.3s;
-}
-
-.topbar__nav a:hover,
-.topbar__nav a.is-active {
-  color: var(--fg);
-}
-
-/* ---------- 네 컷 시퀀스 ---------- */
-
-.story {
-  height: var(--story-length);
-}
-
-/* 스크롤하는 동안 화면에 고정되는 무대 */
-.stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100svh;
+/* 화면에는 안 보이고 화면 낭독기만 읽음 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* 모바일: 아래쪽은 설명 글 자리 */
-  padding-bottom: 150px;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.frame {
-  position: relative;
-  width: min(100vw, (100svh - 150px) * var(--ratio));
-  aspect-ratio: var(--ratio);
-  transform-origin: 50% 35%; /* 얼굴 쪽으로 다가감 */
+.skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  background: var(--cream);
+  color: var(--charcoal);
+  font-size: 13px;
+  transform: translateY(-200%);
 }
 
-/* 휴대폰은 사진 조각 전환만, 컴퓨터는 영상 전환 */
+.skip:focus {
+  transform: none;
+}
+
+/* 컴퓨터 전용 / 휴대폰 전용 (기준 900px) */
 .only-desktop {
   display: none;
 }
 
-/* 영상과 영상이 도착하는 사진은 스크롤하면 나타남 (script.js가 조절) */
-.layer--video,
-.layer--still {
-  opacity: 0;
-}
-
-/* 처음 들어오면 첫 사진이 어둠 속에서 서서히 떠오름 */
-.layer--first {
-  animation: emerge 2.4s cubic-bezier(0.2, 0.6, 0.2, 1) backwards;
-}
-
-@keyframes emerge {
-  from {
-    opacity: 0;
-    transform: scale(1.04);
-  }
-}
-
-.layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 조각: 같은 사진을 겹쳐 놓고 clip-path로 한 조각씩 잘라냄 (JS가 생성) */
-.piece {
-  position: absolute;
-  inset: 0;
-  background-position: center;
-  background-size: cover;
-  will-change: transform, opacity;
-}
-
-/* 사진 가장자리를 검정 배경에 녹아들게 (사진 테두리 사각형이 안 보이도록) */
-img.layer,
-canvas.layer,
-.piece {
-  --edge: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent),
-          linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+/* 사진 가장자리를 어둠에 녹아들게 (사진 테두리 사각형이 안 보이도록) */
+.mask-edges,
+.hero__frame,
+.film__layer,
+.plate__img {
+  --edge: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent),
+          linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent);
   -webkit-mask-image: var(--edge);
   -webkit-mask-composite: source-in;
   mask-image: var(--edge);
   mask-composite: intersect;
 }
 
-/* 첫 화면 제목: 인물을 가리지 않게 아래쪽 (모바일은 사진 아래 가운데) */
-.title {
+
+/* ---------- 상단 메뉴 ---------- */
+
+.topbar {
+  --tb-fg: var(--cream);
+  --tb-muted: rgba(242, 237, 227, 0.55);
+  --tb-bg: rgba(14, 12, 11, 0.72);
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: calc(var(--topbar-h) + var(--safe-top));
+  padding: var(--safe-top) var(--gutter) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--tb-fg);
+  font-size: 13px;
+  transition: color 0.4s, background-color 0.4s;
+}
+
+/* 밝은 섹션 위에서는 글자를 어둡게 (script.js가 data-theme 변경) */
+.topbar[data-theme="light"] {
+  --tb-fg: var(--charcoal);
+  --tb-muted: rgba(29, 25, 22, 0.55);
+  --tb-bg: rgba(235, 229, 216, 0.82);
+}
+
+/* 첫 화면을 지나면 반투명 바탕을 깖 */
+.topbar.is-solid {
+  background: var(--tb-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.topbar__logo {
+  position: relative;
+  z-index: 2;
+  font-family: var(--serif);
+  font-size: 17px;
+  letter-spacing: 0.32em;
+}
+
+/* 지금 페이지를 얼마나 내려왔는지: 실 한 가닥 (script.js가 늘림) */
+.topbar__thread {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* 휴대폰: 현재 섹션 이름 + 메뉴 버튼 */
+.topbar__menu {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+  padding: 0 0 0 12px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+}
+
+.topbar__current {
+  color: var(--tb-muted);
+}
+
+.topbar__burger {
+  display: grid;
+  gap: 6px;
+  width: 22px;
+}
+
+.topbar__burger i {
+  display: block;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.4s var(--ease);
+}
+
+.topbar.is-open .topbar__burger i:first-child {
+  transform: translateY(3.5px) rotate(20deg);
+}
+
+.topbar.is-open .topbar__burger i:last-child {
+  transform: translateY(-3.5px) rotate(-20deg);
+}
+
+/* 휴대폰 메뉴: 전체 화면 */
+.topbar__nav {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--topbar-h) + var(--safe-top)) var(--gutter) 40px;
+  background: var(--ink);
+  color: var(--cream);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--ease), visibility 0.4s;
+}
+
+.topbar.is-open {
+  --tb-fg: var(--cream);
+  --tb-muted: rgba(242, 237, 227, 0.55);
+}
+
+.topbar.is-open .topbar__nav {
+  opacity: 1;
+  visibility: visible;
+}
+
+.topbar__nav ol {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.topbar__nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 8px 0;
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.3;
+  color: rgba(242, 237, 227, 0.5);
+  transition: color 0.3s;
+}
+
+.topbar__nav .num {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+}
+
+.topbar__nav a[aria-current="true"],
+.topbar__nav a:hover {
+  color: var(--cream);
+}
+
+html.menu-open {
+  overflow: hidden;
+}
+
+/* 메뉴가 열리면 바탕 흐림을 끔 (흐림 효과가 있으면 전체 화면 메뉴가 상단 바 안에 갇힘) */
+.topbar.is-open {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Lenis(부드러운 스크롤) 기본 설정 — vendor/lenis 안내대로 */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+
+/* ---------- 공통 섹션 ---------- */
+
+.section {
+  position: relative;
+}
+
+/* 섹션과 섹션이 만나는 자리: 조각을 이은 바느질 땀 */
+.section + .section::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--muted) 0 10px, transparent 10px 18px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.section__label {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.section__label span {
+  margin-right: 8px;
+  color: var(--fg);
+}
+
+.section__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(27px, 7.4vw, 52px);
+  line-height: 1.38;
+  letter-spacing: -0.01em;
+}
+
+
+/* ---------- 01 작품: 첫 화면 ---------- */
+
+.hero__stage {
+  /* 사진 틀 너비: 휴대폰은 화면 너비, 세로가 짧으면 그에 맞춤 */
+  --frame-w: min(100vw, (100svh - var(--topbar-h) - 210px) * var(--ratio));
+  --frame-top: calc(var(--topbar-h) + var(--safe-top) + 8px);
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.hero__frame {
+  position: absolute;
+  top: var(--frame-top);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: var(--frame-w);
+  aspect-ratio: var(--ratio);
+}
+
+.hero__patches,
+.hero__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__photo {
+  object-fit: cover;
+}
+
+/* 조각 하나 = 원단 면(.patch__cloth) + 사진 면(.patch__photo). script.js가 만듦 */
+.patch {
+  position: absolute;
+  overflow: hidden;
+}
+
+.patch > i {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+}
+
+/* 조각과 조각이 이어진 솔기 (모시는 비치므로 겹친 자리가 조금 진해짐) */
+.patch__cloth {
+  box-shadow: inset 0 0 0 1px rgba(40, 20, 10, 0.28);
+}
+
+.patch__photo {
+  opacity: 0;
+}
+
+/* 줌아웃하며 떠오르는 세 낱말 — 휴대폰은 사진 위 가운데 */
+.hero__words {
+  position: absolute;
+  top: var(--frame-top);
+  left: 0;
+  right: 0;
+  height: calc(var(--frame-w) / var(--ratio));
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-family: var(--serif);
+  font-size: 34px;
+  letter-spacing: 0.12em;
+  color: var(--cream);
+  text-shadow: 0 0 24px rgba(0, 0, 0, 0.45);
+}
+
+.hero__words span {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+
+/* 제목: 휴대폰은 사진 아래 가운데 */
+.hero__title {
   position: absolute;
   left: var(--gutter);
   right: var(--gutter);
-  bottom: calc(52px + env(safe-area-inset-bottom));
+  top: calc(var(--frame-top) + var(--frame-w) / var(--ratio) + 18px);
   text-align: center;
-  pointer-events: none;
-  animation: rise 1.6s ease 0.9s backwards;
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
-
-.title__label {
+.hero__label {
   font-size: 11px;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.24em;
   color: var(--muted);
-  margin-bottom: 6px;
 }
 
-.title h1 {
-  font-size: 40px;
-  font-weight: 200;
-  line-height: 1.1;
-  letter-spacing: 0.3em;
-  margin-right: -0.3em; /* letter-spacing 오른쪽 여백 보정 */
+.hero__title h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 1.2;
+  letter-spacing: 0.34em;
+  margin: 4px -0.34em 0 0; /* 자간 때문에 생긴 오른쪽 여백 보정 */
 }
 
-.title__sub {
-  font-size: 14px;
-  font-weight: 300;
-  letter-spacing: 0.12em;
-  margin-top: 8px;
+.hero__sub {
+  font-family: var(--serif);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  margin-top: 4px;
 }
 
-.scroll-hint {
+.hero__hint {
   position: absolute;
-  left: 50%;
-  bottom: calc(16px + env(safe-area-inset-bottom));
-  translate: -50% 0;
-  animation: rise 1.2s ease 1.8s backwards;
+  left: 0;
+  right: 0;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
   font-size: 11px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.24em;
   color: var(--muted);
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
 }
 
-/* 깜빡이는 움직임은 안쪽 글자에만 (바깥 opacity는 script.js가 스크롤에 맞춰 조절) */
-.scroll-hint span {
-  display: block;
-  animation: hint 2s ease-in-out infinite;
+.hero__hint span {
+  display: inline-block;
+  animation: hint 2.4s ease-in-out infinite;
 }
 
 @keyframes hint {
   0%, 100% { transform: translateY(0); opacity: 0.4; }
-  50%      { transform: translateY(6px); opacity: 1; }
+  50%      { transform: translateY(5px); opacity: 1; }
 }
 
-/* 컷별 설명: 모바일은 사진 아래 가운데 */
-.captions {
-  position: absolute;
-  left: var(--gutter);
-  right: var(--gutter);
-  bottom: calc(28px + env(safe-area-inset-bottom));
-  height: 110px;
-  text-align: center;
-  pointer-events: none;
-}
-
-.caption {
-  position: absolute;
-  inset: auto 0 0;
+/* 스크립트가 켜져 있으면 처음엔 사진·제목을 감춰 두고 script.js가 꺼내 보여 줌 */
+.js .hero__photo,
+.js .hero__title {
   opacity: 0;
 }
 
-.caption__num {
-  font-size: 11px;
-  letter-spacing: 0.25em;
-  color: var(--muted);
-}
 
-.caption h2 {
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  margin: 2px 0 6px;
-}
+/* ---------- 01 작품: 두 작품 소개 ---------- */
 
-.caption p:last-child {
-  font-size: 14px;
-  font-weight: 300;
-  color: rgba(242, 239, 233, 0.75);
-}
-
-/* 현재 몇 번째 컷인지 표시 */
-.cut-index {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  translate: 0 -50%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  list-style: none;
-}
-
-.cut-index li {
-  width: 6px;
-  height: 6px;
-  border: 1px solid var(--muted);
-  transition: background-color 0.3s, border-color 0.3s;
-}
-
-.cut-index li.is-active {
-  background: var(--fg);
-  border-color: var(--fg);
-}
-
-/* ---------- 공통 섹션 (Work · About · Info) ---------- */
-
-.section {
-  max-width: 1200px;
+.works {
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 120px var(--gutter) 0;
+  padding: 112px var(--gutter) 128px;
 }
 
-.section__head {
-  margin-bottom: 48px;
+.works .section__head {
+  margin-bottom: 56px;
 }
 
-.section-label {
-  font-size: 12px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
+.works__list {
+  display: grid;
+  gap: 72px;
 }
 
-.section__head h2 {
-  font-size: clamp(24px, 5vw, 36px);
-  font-weight: 400;
-  line-height: 1.35;
+.work__link {
+  display: grid;
+  gap: 22px;
 }
 
-/* 화면에 들어오면 조각이 차례로 나타남 (script.js가 is-in 추가) */
-[data-reveal] > * {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-  transition-delay: calc(var(--i, 0) * 0.08s);
+.work__media {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #1a1715;
 }
 
-[data-reveal].is-in > * {
-  opacity: 1;
-  transform: none;
+.work__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.4s var(--ease);
 }
 
-/* ---------- Work ---------- */
-
-.project + .project {
-  margin-top: 96px;
+/* QR은 정사각형이라 잘리지 않게 액자처럼 */
+.work__media--qr {
+  background: #d9d1c0;
 }
 
-.project__num {
+.work__media--qr img {
+  object-fit: contain;
+}
+
+.work__num {
   font-size: 12px;
   letter-spacing: 0.2em;
   color: var(--muted);
 }
 
-.project h3 {
-  font-size: 22px;
-  font-weight: 500;
-  margin: 4px 0 6px;
+.work h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.4;
+  margin: 6px 0 4px;
 }
 
-.project__meta {
+.work__meta {
   font-size: 13px;
   color: var(--muted);
   margin-bottom: 16px;
 }
 
-.project__desc {
-  font-size: 15px;
-  font-weight: 300;
-  color: rgba(242, 239, 233, 0.85);
-  margin-bottom: 32px;
+.work__line {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.9;
+  color: rgba(242, 237, 227, 0.86);
 }
 
-/* 사진 모아보기 */
-.gallery {
+@media (hover: hover) {
+  .work__link:hover .work__media img {
+    transform: scale(1.04);
+  }
+}
+
+
+/* ---------- 02 배경 ---------- */
+
+#background {
+  overflow: clip;
+}
+
+/* 뒤에 깔린 생지 모시 결: 화면에 붙은 채로 글이 그 위를 지나감 */
+.background__cloth {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  margin-bottom: -100vh;
+  margin-bottom: -100svh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.background__cloth img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+}
+
+.background__inner {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px var(--gutter) 22vh;
+}
+
+/* 사실 정리 (사전처럼) */
+.define {
+  max-width: 420px;
+  margin: 40px 0 18vh;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.define dt {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.define dt span {
+  margin-left: 6px;
+  color: var(--muted);
+}
+
+.define dd {
+  color: var(--muted);
+}
+
+.verse {
+  font-family: var(--serif);
+  font-size: clamp(24px, 6.4vw, 46px);
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+  margin-bottom: 22vh;
+}
+
+.verse em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.verse--last {
+  font-size: clamp(30px, 8vw, 64px);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+
+/* ---------- 03 아홉 가지 색 ----------
+   기본(휴대폰·움직임 줄이기): 카드가 화면에 붙어 한 장씩 위로 덮임 (CSS sticky)
+   컴퓨터: script.js가 .is-horizontal을 붙이면 가로로 한 장씩 넘어감 (아래 컴퓨터 부분) */
+
+.colors__intro {
+  padding: 112px var(--gutter) 72px;
+}
+
+.colors__facts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 40px 0 36px;
+  max-width: 460px;
+}
+
+.colors__facts > div {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.colors__facts dt {
+  font-family: var(--serif);
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+
+.colors__facts dt .hanja {
+  margin-right: 6px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.colors__facts dd {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.colors__lead {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.9;
+}
+
+.colors__cue {
+  margin-top: 28px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
+/* 색 카드 한 장 */
+.hue {
+  position: sticky;
+  top: calc(var(--topbar-h) + var(--safe-top));
+  height: calc(100svh - var(--topbar-h) - var(--safe-top));
+  min-height: 520px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+  background: var(--hue);
+  color: var(--on);
+  box-shadow: 0 -14px 28px rgba(14, 12, 11, 0.16);
+}
+
+/* 카드가 다 보인 채로 잠시 머문 뒤 다음 카드가 덮음 (값이 클수록 오래 머묾) */
+.hue:not(:last-child) {
+  margin-bottom: 45svh;
+}
+
+.hue__cloth {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.hue__cloth img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hue__text {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "no    no"
+    "hanja name"
+    "hanja facts"
+    "line  line"
+    "src   src";
+  column-gap: 18px;
+  align-items: end;
+  padding: 18px var(--gutter) 22px;
+}
+
+.hue__no {
+  grid-area: no;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+.hue__hanja {
+  grid-area: hanja;
+  align-self: center;
+  font-family: var(--serif);
+  font-size: 64px;
+  line-height: 1;
+}
+
+.hue__name {
+  grid-area: name;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.3;
+}
+
+.hue__name span {
+  margin-left: 6px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.hue__facts {
+  grid-area: facts;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+.hue__line {
+  grid-area: line;
+  margin-top: 14px;
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.hue__src {
+  grid-area: src;
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+}
+
+/* 컴퓨터 가로 넘김에서 지금 몇 번째 색인지 */
+.colors__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  z-index: 2;
+  gap: 8px;
+  translate: -50% 0;
+}
+
+.colors__dots li {
+  width: 9px;
+  height: 9px;
+  background: var(--c);
+  outline: 1px solid rgba(29, 25, 22, 0.25);
+  transition: transform 0.4s var(--ease);
+}
+
+.colors__dots li.is-active {
+  transform: scale(1.7);
+}
+
+
+/* ---------- 04 사진 ---------- */
+
+/* 휴대폰: 세 장면 */
+.plates {
+  display: grid;
+  padding: 112px var(--gutter) 24px;
+}
+
+.plates .section__head {
+  margin-bottom: 48px;
+}
+
+.plate {
+  margin-bottom: 64px;
+}
+
+.plate__img {
+  aspect-ratio: var(--ratio);
+  overflow: hidden;
+}
+
+.plate__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plate figcaption {
+  margin-top: 14px;
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.8;
+  color: rgba(242, 237, 227, 0.86);
+}
+
+.plate__num {
+  display: block;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+
+.plate strong {
+  display: block;
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: 0.12em;
+  color: var(--fg);
+}
+
+/* 모아 보기 */
+.album {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 40px var(--gutter) 128px;
+}
+
+.album__title {
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  margin-bottom: 20px;
+}
+
+.album__title span {
+  margin-left: 8px;
+  color: var(--muted);
+}
+
+.album__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px 8px;
-  list-style: none;
+}
+
+.album__grid img {
+  aspect-ratio: var(--ratio);
+  object-fit: cover;
+}
+
+.album__grid p {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.album__grid p span {
+  color: var(--muted);
+  margin-right: 6px;
 }
 
 /* 눌러서 크게 보는 사진 */
@@ -371,147 +915,184 @@ canvas.layer,
   width: 100%;
   padding: 0;
   border: 0;
-  background: #111;
+  background: #161311;
   overflow: hidden;
   cursor: zoom-in;
 }
 
 [data-lightbox] img {
   width: 100%;
-  transition: transform 0.6s ease;
-}
-
-.gallery img {
-  aspect-ratio: var(--ratio);
-  object-fit: cover;
-}
-
-.gallery p {
-  margin-top: 10px;
-  font-size: 13px;
-}
-
-.gallery p span {
-  color: var(--muted);
-  margin-right: 6px;
-}
-
-.qr {
-  max-width: 560px;
-}
-
-/* ---------- About ---------- */
-
-.about__text p {
-  font-size: 16px;
-  font-weight: 300;
-  color: rgba(242, 239, 233, 0.85);
-}
-
-.about__text p + p {
-  margin-top: 1.2em;
-}
-
-.fabric {
-  margin-top: 96px;
-}
-
-.fabric h3 {
-  font-size: 18px;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.fabric > p {
-  font-size: 15px;
-  font-weight: 300;
-  color: rgba(242, 239, 233, 0.85);
-  margin-bottom: 32px;
-}
-
-/* 크기가 다른 조각을 이어 붙인 배치. 글자 하나가 조각 하나 (a = 회색 … i = 생지) */
-.patchwork {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 80px;
-  grid-template-areas:
-    "a a a b"
-    "a a a b"
-    "c c d d"
-    "e f f f"
-    "e g g h"
-    "i i i h";
-  gap: 2px;
-  list-style: none;
-}
-
-.patchwork li:nth-child(1) { grid-area: a; }
-.patchwork li:nth-child(2) { grid-area: b; }
-.patchwork li:nth-child(3) { grid-area: c; }
-.patchwork li:nth-child(4) { grid-area: d; }
-.patchwork li:nth-child(5) { grid-area: e; }
-.patchwork li:nth-child(6) { grid-area: f; }
-.patchwork li:nth-child(7) { grid-area: g; }
-.patchwork li:nth-child(8) { grid-area: h; }
-.patchwork li:nth-child(9) { grid-area: i; }
-
-.patchwork li {
-  position: relative;
-  overflow: hidden;
-  background: #111;
-}
-
-.patchwork img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.patchwork span {
-  position: absolute;
-  left: 10px;
-  bottom: 8px;
-  font-size: 12px;
-  letter-spacing: 0.15em;
-  color: #fff;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-}
-
-/* 밝은 원단(회색·모래색·황색·생지)은 글자를 어둡게 */
-.patchwork li:nth-child(1) span,
-.patchwork li:nth-child(2) span,
-.patchwork li:nth-child(4) span,
-.patchwork li:nth-child(9) span {
-  color: #2a2620;
-  text-shadow: none;
+  transition: transform 0.8s var(--ease);
 }
 
 @media (hover: hover) {
-  .patchwork li:hover img,
   [data-lightbox]:hover img {
     transform: scale(1.04);
   }
 }
 
-.info {
-  max-width: 640px;
-  border-top: 1px solid rgba(242, 239, 233, 0.2);
-}
 
-.info > div {
+/* ---------- 05 QR ---------- */
+
+.qr__stage {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(242, 239, 233, 0.2);
-  font-size: 14px;
+  gap: 44px;
+  padding: 112px var(--gutter) 120px;
 }
 
-.info dt {
+.qr__steps {
+  display: grid;
+  gap: 14px;
+  margin: 36px 0 32px;
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.qr__steps em {
+  display: block;
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.22em;
   color: var(--muted);
 }
 
-/* ---------- 사진 크게 보기 ---------- */
+.qr__meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.qr__media {
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: #d9d1c0;
+}
+
+.qr__button {
+  height: 100%;
+  background: none;
+}
+
+.qr__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ---------- 06 전시 정보 ---------- */
+
+.info {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 112px var(--gutter) 40px;
+}
+
+.info .section__title {
+  font-size: clamp(24px, 6vw, 40px);
+}
+
+.info__body {
+  display: grid;
+  gap: 56px;
+  margin-top: 48px;
+}
+
+.info__list {
+  border-top: 1px solid var(--line);
+}
+
+.info__list > div {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.info__list dt {
+  color: var(--muted);
+}
+
+.info__subhead {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.info__pieces ol {
+  display: grid;
+  gap: 18px;
+  counter-reset: piece;
+}
+
+.info__pieces li {
+  counter-increment: piece;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  font-size: 14px;
+}
+
+.info__pieces li::before {
+  content: counter(piece, decimal-leading-zero);
+  grid-row: span 2;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding-top: 3px;
+}
+
+.info__pieces strong {
+  font-weight: 500;
+}
+
+.info__pieces li span {
+  color: var(--muted);
+}
+
+.info__print {
+  max-width: 260px;
+  margin-top: 36px;
+}
+
+.info__print img {
+  aspect-ratio: 832 / 1104;
+  object-fit: cover;
+}
+
+.info__print figcaption {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.footer {
+  padding: 120px var(--gutter) calc(48px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+}
+
+.footer__line {
+  font-family: var(--serif);
+  font-size: clamp(24px, 6vw, 40px);
+  line-height: 1.6;
+}
+
+.footer__meta {
+  margin-top: 56px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.footer__meta a {
+  border-bottom: 1px solid var(--line);
+}
+
+
+/* ---------- 크게 보기 ---------- */
 
 .lightbox {
   width: 100%;
@@ -521,8 +1102,8 @@ canvas.layer,
   margin: 0;
   padding: 56px 16px 72px;
   border: 0;
-  background: rgba(0, 0, 0, 0.94);
-  color: var(--fg);
+  background: rgba(10, 9, 8, 0.95);
+  color: var(--cream);
 }
 
 .lightbox[open] {
@@ -551,13 +1132,13 @@ html:has(.lightbox[open]) {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(24px + env(safe-area-inset-bottom));
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   text-align: center;
   font-size: 13px;
 }
 
 .lightbox__count {
-  color: var(--muted);
+  color: rgba(242, 237, 227, 0.55);
   margin-right: 12px;
 }
 
@@ -567,7 +1148,6 @@ html:has(.lightbox[open]) {
   height: 48px;
   border: 0;
   background: none;
-  color: var(--fg);
   font-size: 20px;
   cursor: pointer;
   opacity: 0.7;
@@ -577,13 +1157,12 @@ html:has(.lightbox[open]) {
   opacity: 1;
 }
 
-/* 마우스·터치로 열 때 버튼 테두리 숨김 (키보드로 이동할 때만 표시) */
 .lightbox button:focus:not(:focus-visible) {
   outline: none;
 }
 
 .lightbox__close {
-  top: calc(8px + env(safe-area-inset-top));
+  top: calc(8px + var(--safe-top));
   right: 8px;
 }
 
@@ -596,20 +1175,15 @@ html:has(.lightbox[open]) {
 .lightbox__prev { left: 4px; }
 .lightbox__next { right: 4px; }
 
-.footer {
-  margin-top: 120px;
-  padding: 48px var(--gutter) calc(48px + env(safe-area-inset-bottom));
-  text-align: center;
-  font-size: 12px;
-  color: var(--muted);
-}
 
-/* ---------- 데스크톱 ---------- */
+/* =========================================================
+   컴퓨터 (900px 이상)
+   ========================================================= */
 
 @media (min-width: 900px) {
   :root {
     --gutter: 48px;
-    --story-length: 1800vh; /* 영상이 들어가서 더 김. 늘리면 영상이 더 천천히 지나감 */
+    --topbar-h: 68px;
   }
 
   .only-desktop {
@@ -620,46 +1194,366 @@ html:has(.lightbox[open]) {
     display: none;
   }
 
-  .stage {
-    padding: 72px 0;
+  /* 상단 메뉴: 한 줄로 모두 보임 */
+  .topbar__menu {
+    display: none;
   }
 
-  .frame {
-    width: auto;
+  .topbar__nav {
+    position: static;
+    padding: 0;
+    background: none;
+    color: inherit;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .topbar__nav ol {
+    display: flex;
+    gap: 30px;
+  }
+
+  .topbar__nav a {
+    position: relative;
+    gap: 7px;
+    padding: 6px 0;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--tb-muted);
+  }
+
+  .topbar__nav .num {
+    font-size: 10px;
+  }
+
+  .topbar__nav a[aria-current="true"],
+  .topbar__nav a:hover {
+    color: var(--tb-fg);
+  }
+
+  /* 지금 섹션: 밑줄 한 땀 */
+  .topbar__nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .topbar__nav a[aria-current="true"]::after {
+    transform: scaleX(1);
+  }
+
+  /* 첫 화면: 사진은 가운데, 낱말은 왼쪽, 제목은 왼쪽 아래 */
+  .hero__stage {
+    --frame-w: calc((100vh - 144px) * var(--ratio));
+    --frame-top: 72px;
+  }
+
+  .hero__words {
+    left: var(--gutter);
+    right: auto;
+    width: calc((100vw - var(--frame-w)) / 2 - var(--gutter) * 1.5);
+    place-items: center start;
+    font-size: clamp(32px, 3.4vw, 52px);
+  }
+
+  .hero__title {
+    top: auto;
+    right: auto;
+    bottom: 72px;
+    width: calc((100vw - var(--frame-w)) / 2 - var(--gutter) * 1.5);
+    text-align: left;
+  }
+
+  .hero__label {
+    font-size: 12px;
+  }
+
+  .hero__title h1 {
+    font-size: clamp(48px, 4.6vw, 76px);
+    margin-right: 0;
+  }
+
+  .hero__sub {
+    font-size: 18px;
+  }
+
+  /* 두 작품: 나란히 */
+  .works {
+    padding: 160px var(--gutter) 160px;
+  }
+
+  .works .section__head {
+    margin-bottom: 80px;
+  }
+
+  .works__list {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .work:nth-child(2) {
+    margin-top: 120px; /* 엇갈리게 놓아 조각을 덧댄 느낌 */
+  }
+
+  .work__line {
+    font-size: 17px;
+  }
+
+  /* 배경 */
+  .background__inner {
+    padding: 160px var(--gutter) 26vh;
+  }
+
+  .verses {
+    padding-left: 18%;
+  }
+
+  .verse {
+    margin-bottom: 30vh;
+  }
+
+  /* 아홉 가지 색: 가로로 한 장씩 (script.js가 .is-horizontal을 붙였을 때만) */
+  .colors.is-horizontal {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .colors.is-horizontal .colors__track {
+    display: flex;
+    width: max-content;
     height: 100%;
   }
 
-  /* 섹션: 왼쪽 제목 / 오른쪽 내용 */
-  .section {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    column-gap: 64px;
+  .colors.is-horizontal .colors__intro {
+    flex: none;
+    width: min(44vw, 640px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: calc(var(--topbar-h) + 24px) var(--gutter) 48px;
+  }
+
+  /* 색 카드: 컴퓨터에서는 왼쪽 원단 / 오른쪽 글 */
+  .hue {
+    grid-template-rows: none;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hue__text {
+    align-content: end;
+    padding: 48px 48px 88px;
+  }
+
+  .hue__hanja {
+    font-size: clamp(88px, 8vw, 132px);
+  }
+
+  .hue__name {
+    font-size: 34px;
+  }
+
+  .hue__line {
+    margin-top: 28px;
+    font-size: 21px;
+  }
+
+  .colors.is-horizontal .hue {
+    position: relative;
+    top: auto;
+    flex: none;
+    margin-bottom: 0;
+    width: min(68vw, 1080px);
+    height: 100%;
+    min-height: 0;
+    box-shadow: none;
+  }
+
+  .colors.is-horizontal .hue__text {
+    padding-top: calc(var(--topbar-h) + 32px);
+  }
+
+  /* 가로 넘김이 아닐 때(움직임 줄이기)는 한 장씩 위로 쌓이는 카드를 가운데 정렬 */
+  .colors:not(.is-horizontal) .colors__intro {
+    max-width: 1240px;
+    margin: 0 auto;
     padding-top: 160px;
   }
 
-  /* 제목은 스크롤해도 왼쪽에 붙어 있음 */
-  .section__head {
-    grid-column: 1;
-    grid-row: 1 / span 10;
-    align-self: start;
-    position: sticky;
-    top: 96px;
+  .colors.is-horizontal .colors__dots {
+    display: flex;
   }
 
-  .section > :not(.section__head) {
-    grid-column: 2;
+  .colors__dots,
+  .colors:not(.is-horizontal) .colors__cue {
+    display: none;
   }
 
-  .section__head h2 {
-    font-size: 28px;
+  /* 사진: 화면에 고정된 영상 무대 */
+  .film__stage {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 72px 0;
+    overflow: hidden;
   }
 
-  .gallery {
+  .film__head {
+    position: absolute;
+    top: calc(var(--topbar-h) + 40px);
+    left: var(--gutter);
+  }
+
+  .film__head .section__title {
+    font-size: clamp(28px, 2.6vw, 40px);
+  }
+
+  .film__frame {
+    position: relative;
+    height: 100%;
+    aspect-ratio: var(--ratio);
+  }
+
+  .film__layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .film__video,
+  .film__last {
+    opacity: 0;
+  }
+
+  .film__captions {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 72px;
+    width: min(300px, (100vw - (100vh - 144px) * var(--ratio)) / 2 - 96px);
+    height: 140px;
+  }
+
+  .film__caption {
+    position: absolute;
+    inset: auto 0 0;
+    opacity: 0;
+  }
+
+  .film__num {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: var(--muted);
+  }
+
+  .film__caption h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: 0.14em;
+    margin: 2px 0 8px;
+  }
+
+  .film__caption p:last-child {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(242, 237, 227, 0.82);
+  }
+
+  /* 오른쪽: 감은 눈 → 내린 시선 → 정면 응시 */
+  .film__index {
+    position: absolute;
+    right: var(--gutter);
+    top: 50%;
+    translate: 0 -50%;
+    display: grid;
+    gap: 14px;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .film__index li {
+    transition: color 0.4s;
+  }
+
+  .film__index span {
+    margin-right: 8px;
+    font-size: 10px;
+  }
+
+  .film__index li.is-active {
+    color: var(--fg);
+  }
+
+  /* 사진 세 장면이 컴퓨터에서 보일 때 (스크립트 꺼짐·움직임 줄이기): 3열 */
+  .plates {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 160px var(--gutter) 0;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 24px;
+  }
+
+  .plates .section__head {
+    grid-column: 1 / -1;
+  }
+
+  .album {
+    padding: 120px var(--gutter) 160px;
+  }
+
+  .album__grid {
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
   }
 
-  .project__desc {
-    max-width: 560px;
+  /* QR: 글은 왼쪽, QR은 오른쪽 */
+  .qr__stage {
+    height: 100vh;
+    min-height: 640px;
+    max-width: 1440px;
+    margin: 0 auto;
+    grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: 64px;
+    padding: calc(var(--topbar-h) + 24px) var(--gutter) 40px;
+  }
+
+  .qr__media {
+    width: min(100%, 76vh);
+    justify-self: center;
+  }
+
+  .qr__steps {
+    font-size: 19px;
+  }
+
+  /* 전시 정보 */
+  .info {
+    padding: 160px var(--gutter) 40px;
+  }
+
+  .info__body {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+
+  .footer {
+    padding-top: 160px;
   }
 
   .lightbox {
@@ -668,91 +1562,48 @@ html:has(.lightbox[open]) {
 
   .lightbox__prev { left: 24px; }
   .lightbox__next { right: 24px; }
-
-  .patchwork {
-    grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: 140px;
-    grid-template-areas:
-      "a a a b b b"
-      "a a a c c d"
-      "e e f f g d"
-      "e e h h i i";
-    gap: 3px;
-  }
-
-  .patchwork span {
-    left: 16px;
-    bottom: 12px;
-    font-size: 13px;
-  }
-
-  /* 제목은 사진 왼쪽 아래, 크게 */
-  .title {
-    right: auto;
-    bottom: 72px;
-    text-align: left;
-  }
-
-  .title h1 {
-    font-size: clamp(44px, 4.5vw, 72px);
-    margin-right: 0;
-  }
-
-  .title__label {
-    font-size: 12px;
-    margin-bottom: 12px;
-  }
-
-  .title__sub {
-    font-size: 17px;
-    margin-top: 12px;
-  }
-
-  /* 설명은 사진 왼쪽 아래 */
-  .captions {
-    left: var(--gutter);
-    right: auto;
-    bottom: 72px;
-    width: min(280px, (100vw - (100svh - 144px) * var(--ratio)) / 2 - 96px);
-    text-align: left;
-  }
-
-  .caption h2 {
-    font-size: 28px;
-  }
-
-  .caption p:last-child {
-    font-size: 15px;
-  }
-
-  .cut-index {
-    right: var(--gutter);
-  }
-
-  .topbar {
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  .topbar__nav {
-    gap: 32px;
-  }
 }
 
-/* 움직임 줄이기 설정을 켠 사용자: 조각이 날아오지 않고 제자리에서 나타남 (script.js에서 처리) */
+
+/* 스크립트가 꺼져 있으면 컴퓨터에서도 사진을 세 장으로 보여 줌 */
+html:not(.js) .film {
+  display: none;
+}
+
+html:not(.js) .plates {
+  display: grid;
+}
+
+
+/* =========================================================
+   움직임 줄이기 설정을 켠 사용자
+   - 첫 화면: 조각 조립 없이 완성된 사진과 제목
+   - 아홉 가지 색: 가로 넘김 없이 카드가 위로 쌓임
+   - 사진: 스크롤 영상 대신 세 장의 사진
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
-  .scroll-hint span,
-  .scroll-hint,
-  .title,
-  .layer--first {
+  .js .hero__photo,
+  .js .hero__title {
+    opacity: 1;
+  }
+
+  .hero__hint span {
     animation: none;
   }
 
-  [data-reveal] > * {
-    transition: none;
+  .film {
+    display: none !important;
   }
 
-  html {
-    scroll-behavior: auto;
+  .plates {
+    display: grid !important;
+  }
+
+  .work__media img,
+  [data-lightbox] img,
+  .topbar__nav,
+  .topbar__nav a::after {
+    transition: none;
   }
 }
